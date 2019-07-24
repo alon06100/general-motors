@@ -29,7 +29,7 @@ const getEndGameText = (gameStatus) => {
 const GameTable = ({
   gamePoints, setGamePoints, setGameStatus, gameStatus,
 }) => (
-  gamePoints.map((row, index) => (
+    gamePoints.map((row, index) => (
       <div key={index} className="row-wrapper">
         {row.map((box, boxIndex) => (
           <div onClick={() => play([index, boxIndex], gamePoints, setGamePoints, setGameStatus, gameStatus)} key={boxIndex} className="game-box">
@@ -37,8 +37,8 @@ const GameTable = ({
           </div>
         ))}
       </div>
-  ))
-);
+    ))
+  );
 
 const App = () => {
   const [gamePoints, setGamePoints] = useState([
@@ -52,14 +52,14 @@ const App = () => {
     if (gameStatus === CPU_TURN) {
       axios.post(`${serverUrl}/play`,
         { gamePoints }).then((res) => {
-        setGamePoints(res.data);
-        const result = checkWinner(res.data);
-        if (result) {
-          setGameStatus(LOSE);
-        } else {
-          setGameStatus(USER_TURN);
-        }
-      });
+          setGamePoints(res.data);
+          const result = checkWinner(res.data);
+          if (result) {
+            setGameStatus(LOSE);
+          } else {
+            setGameStatus(USER_TURN);
+          }
+        });
     }
   }, [gameStatus]);
   return (
