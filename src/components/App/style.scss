@@ -47,4 +47,22 @@ html, body {
       }
     }
   }
+  #restart-container {
+    flex: 0.5;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-flow: column nowrap;
+    cursor: pointer;
+    img {
+      width: 25px;
+      height: 25px;
+      animation: rotation .5s;     
+    }
+  }
+}
+
+@keyframes rotation {
+  from {transform: rotate(0deg);}
+  to {transform: rotate(360deg);}
 }

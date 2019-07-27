@@ -7,7 +7,8 @@ const {
   CPU_TURN, USER_TURN, WIN,
 } = constants;
 
-const play = (position, gamePoints, setPoints, setGameStatus, gameStatus) => {
+const play = (position, gamePoints, setPoints, setGameStatus, gameStatus, setTurnCount, turnCount) => {
+  console.log(turnCount)
   if (gameStatus === USER_TURN) {
     const userClickedOnEmptyBox = gamePoints[position[0]][position[1]] === '';
     if (userClickedOnEmptyBox) {
@@ -16,6 +17,7 @@ const play = (position, gamePoints, setPoints, setGameStatus, gameStatus) => {
       });
       setPoints(nextState);
       const result = checkWinner(nextState);
+      setTurnCount(turnCount + 1);
       if (result) {
         setGameStatus(WIN);
       } else {

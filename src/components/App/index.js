@@ -10,12 +10,19 @@ import play from './utils/play';
 import LottieControl from '../Lottie';
 import x from '../../animations/x';
 import o from '../../animations/o';
+import restartIcon from '../../restart-icon.png';
 import './style.scss';
 
 
 const {
   CPU_TURN, USER_TURN, LOSE, WIN,
 } = constants;
+
+const initialGameState = [
+  ['', '', ''],
+  ['', '', ''],
+  ['', '', ''],
+];
 
 const serverUrl = '/api';
 
@@ -40,12 +47,12 @@ const getAnimation = (box) => {
 }
 
 const GameTable = ({
-  gamePoints, setGamePoints, setGameStatus, gameStatus,
+  gamePoints, setGamePoints, setGameStatus, gameStatus, setTurnCount, turnCount
 }) => (
     gamePoints.map((row, index) => (
       <div key={index} className="row-wrapper">
         {row.map((box, boxIndex) => (
-          <div onClick={() => play([index, boxIndex], gamePoints, setGamePoints, setGameStatus, gameStatus)} key={boxIndex} className="game-box">
+          <div onClick={() => play([index, boxIndex], gamePoints, setGamePoints, setGameStatus, gameStatus, setTurnCount, turnCount)} key={boxIndex} className="game-box">
             <LottieControl
                 animationData={getAnimation(box)}
                 width={'80%'}
@@ -57,19 +64,25 @@ const GameTable = ({
     ))
   );
 
+const restartGame = (setGamePoints, setGameStatus, endGame, setTurnCount ) => {
+  setGamePoints(initialGameState);
+  setTurnCount(1);
+  endGame(false);
+  setGameStatus(USER_TURN);
+};  
+
 const App = () => {
-  const [gamePoints, setGamePoints] = useState([
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-  ]);
+  const [gamePoints, setGamePoints] = useState(initialGameState);
   const [gameStatus, setGameStatus] = useState(USER_TURN);
+  const [isGameFinished, endGame] = useState(false);
+  const [turnCount, setTurnCount] = useState(1);
 
   useEffect(() => {
     if (gameStatus === CPU_TURN) {
       axios.post(`${serverUrl}/play`,
         { gamePoints }).then((res) => {
           setGamePoints(res.data);
+          setTurnCount(turnCount + 1);
           const result = checkWinner(res.data);
           if (result) {
             setGameStatus(LOSE);
@@ -77,6 +90,10 @@ const App = () => {
             setGameStatus(USER_TURN);
           }
         });
+    }
+
+    if(gameStatus === WIN || gameStatus === LOSE || turnCount === 10) {
+      endGame(true);
     }
   }, [gameStatus]);
   return (
@@ -88,8 +105,16 @@ const App = () => {
           setGamePoints={setGamePoints}
           setGameStatus={setGameStatus}
           gameStatus={gameStatus}
+          setTurnCount={setTurnCount}
+          turnCount={turnCount}
         />
       </div>
+    { isGameFinished && 
+    <div onClick={()=> restartGame(setGamePoints, setGameStatus, endGame, setTurnCount)} id="restart-container">
+     RESTART
+     <img src = {restartIcon} />
+    </div>
+   }
     </div>
   );
 };
