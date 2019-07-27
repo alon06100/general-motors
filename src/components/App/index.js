@@ -7,6 +7,9 @@ import axios from 'axios';
 import constants from '../constants';
 import checkWinner from './utils/checkWinner';
 import play from './utils/play';
+import LottieControl from '../Lottie';
+import x from '../../animations/x';
+import o from '../../animations/o';
 import './style.scss';
 
 
@@ -26,6 +29,16 @@ const getEndGameText = (gameStatus) => {
   return '';
 };
 
+const getAnimation = (box) => {
+  if(box === 'X') {
+    return x;
+  }
+  if(box === 'O') {
+    return o;
+  }
+  return ''
+}
+
 const GameTable = ({
   gamePoints, setGamePoints, setGameStatus, gameStatus,
 }) => (
@@ -33,7 +46,11 @@ const GameTable = ({
       <div key={index} className="row-wrapper">
         {row.map((box, boxIndex) => (
           <div onClick={() => play([index, boxIndex], gamePoints, setGamePoints, setGameStatus, gameStatus)} key={boxIndex} className="game-box">
-            {box}
+            <LottieControl
+                animationData={getAnimation(box)}
+                width={'80%'}
+                height={'80%'}
+              />
           </div>
         ))}
       </div>
@@ -49,6 +66,7 @@ const App = () => {
   const [gameStatus, setGameStatus] = useState(USER_TURN);
 
   useEffect(() => {
+    console.log(x)
     if (gameStatus === CPU_TURN) {
       axios.post(`${serverUrl}/play`,
         { gamePoints }).then((res) => {
