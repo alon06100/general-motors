@@ -66,7 +66,6 @@ const App = () => {
   const [gameStatus, setGameStatus] = useState(USER_TURN);
 
   useEffect(() => {
-    console.log(x)
     if (gameStatus === CPU_TURN) {
       axios.post(`${serverUrl}/play`,
         { gamePoints }).then((res) => {
