@@ -26,7 +26,7 @@ const getEndGameText = (gameStatus) => {
   if (gameStatus === LOSE) {
     return 'YOU LOST!';
   }
-  return '';
+  return 'Tic Tac Toe';
 };
 
 const getAnimation = (box) => {
